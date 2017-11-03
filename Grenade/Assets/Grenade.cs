@@ -5,6 +5,8 @@ using UnityEngine;
 public class Grenade : MonoBehaviour {
 
 	public float delay = 3f;
+	public float radius = 5f;
+	public float force = 700f;
 	public GameObject explosionEffect;
 
 	float countdown;
@@ -27,9 +29,17 @@ public class Grenade : MonoBehaviour {
 	void Explode(){
 		//Show Effect
 		Instantiate(explosionEffect,transform.position,transform.rotation);
+
 		//Get nearby objects
+		Collider[] colliders = Physics.OverlapSphere(transform.position,radius);
+
+		foreach (Collider nearbyObject in colliders) {
+			Rigidbody rb = nearbyObject.GetComponent<Rigidbody> ();
 			//Apply force
-			//Damage
+			if (rb != null) {
+				rb.AddExplosionForce (force, transform.position, radius);
+			}
+		}
 
 		//Remove Grenade
 		Destroy(gameObject);
